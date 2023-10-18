@@ -1,62 +1,54 @@
-import { useReducer, useState } from 'react';
+import { useReducer } from 'react';
+
+const initialState = { count: 0, step: 1 };
 
 const reducer = function (currState, action) {
   console.log(currState, action);
 
-  if (action.type === 'increment') return currState + 1;
-  if (action.type === 'decrement') return currState - 1;
-  if (action.type === 'setCount') return action.payload;
+  switch (action.type) {
+    case 'decrement':
+      return { ...currState, count: currState.count - currState.step };
+    case 'increment':
+      return { ...currState, count: currState.count + currState.step };
+    case 'setCount':
+      return { ...currState, count: action.payload };
+    case 'setStep':
+      return { ...currState, step: action.payload };
+    case 'reset':
+      return initialState;
+    default:
+      throw new Error('unknown action');
+  }
 };
 
 function DateCounter() {
-  // const [count, setCount] = useState(0);
-  const [count, dispatch] = useReducer(reducer, 0);
-
-  const [step, setStep] = useState(1);
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const { count, step } = state;
 
   // This mutates the date object.
   const date = new Date('june 20 2027');
   date.setDate(date.getDate() + count);
 
   const decrement = function () {
-    /** ACTION OF USE REDUCER FUNCTION
-     * ! let's use action of reducer function
-     * * this object we passed in is called as action when we work with reducer function
-     * * this object we made could have any shape that we wanted
-     * ! but it is standard to just have type property and payload property
-     * ! this is the standard we will always see when using the useReducer hook
-     */
     dispatch({ type: 'decrement' });
-
-    // dispatch(-1);
-
-    // setCount((count) => count - 1);
-    // setCount((count) => count - step);
   };
 
   const increment = function () {
     dispatch({ type: 'increment' });
-
-    // setCount((count) => count + 1);
-    // setCount((count) => count + step);
   };
 
   // user input onChange function
   const defineCount = function (e) {
     dispatch({ type: 'setCount', payload: Number(e.target.value) });
-
-    // setCount(Number(e.target.value));
   };
 
   // slider onChange function
   const defineStep = function (e) {
-    dispatch({ type: 'setCount', payload: Number(e.target.value) });
-    // setStep(Number(e.target.value));
+    dispatch({ type: 'setStep', payload: Number(e.target.value) });
   };
 
   const reset = function () {
-    // setCount(0);
-    setStep(1);
+    dispatch({ type: 'reset' });
   };
 
   return (
