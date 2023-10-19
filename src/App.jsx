@@ -29,7 +29,7 @@ import Main from './components/main/Main';
  * ? you will get two things in termal
  * Resources: you can use this url to fetch your data, this will be your fake api
  * ! http://localhost:8000/questions
- * Home: here you can access your project live
+ * Home:
  * ! http://localhost:8000
  */
 
