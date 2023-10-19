@@ -4,6 +4,7 @@ import Loader from './components/loader/Loader';
 import Error from './components/error/Error';
 
 import Header from './components/header/Header';
+import Progress from './components/progress/Progress';
 import Main from './components/main/Main';
 import Questions from './components/questions/Questions';
 import NextButton from './components/next button/NextButton';
@@ -87,6 +88,10 @@ function App() {
   );
 
   const numOfQuestions = questions.length;
+  const maxPossiblePoints = questions.reduce(
+    (prev, cur) => prev + cur.points,
+    0
+  );
 
   useEffect(() => {
     /*  async function fakeApi() {
@@ -119,6 +124,14 @@ function App() {
         )}
         {status === 'active' && (
           <>
+            <Progress
+              index={index}
+              numQuestions={numOfQuestions}
+              points={points}
+              maxPossiblePoints={maxPossiblePoints}
+              answer={answer}
+            />
+
             <Questions
               questionIndex={questions[index]}
               dispatch={dispatch}
