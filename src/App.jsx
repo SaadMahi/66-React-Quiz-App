@@ -5,9 +5,10 @@ import Error from './components/error/Error';
 
 import Header from './components/header/Header';
 import Main from './components/main/Main';
+import Questions from './components/questions/Questions';
+import NextButton from './components/next button/NextButton';
 
 import StartScreen from './components/start screen/StartScreen';
-import Questions from './components/questions/Questions';
 
 /** CREATING FAKE API
  * ? let's begin with installing a fake api, so that we fake that questions are rendering from api
@@ -71,6 +72,8 @@ const reducer = function (state, action) {
             ? state.points + question.points
             : state.points,
       };
+    case 'nextQuestion':
+      return { ...state, index: state.index + 1, answer: null };
 
     default:
       throw new Error('Action is unknown');
@@ -115,11 +118,15 @@ function App() {
           <StartScreen numOfQuestions={numOfQuestions} dispatch={dispatch} />
         )}
         {status === 'active' && (
-          <Questions
-            questionIndex={questions[index]}
-            dispatch={dispatch}
-            answer={answer}
-          />
+          <>
+            <Questions
+              questionIndex={questions[index]}
+              dispatch={dispatch}
+              answer={answer}
+            />
+
+            <NextButton dispatch={dispatch} answer={answer} />
+          </>
         )}
       </Main>
     </div>
