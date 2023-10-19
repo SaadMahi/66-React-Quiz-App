@@ -1,6 +1,11 @@
-import { useEffect } from 'react';
+import { useEffect, useReducer } from 'react';
+
+import Loader from './components/loader/Loader';
+import Error from './components/error/Error';
+
 import Header from './components/header/Header';
 import Main from './components/main/Main';
+import StartScreen from './components/start screen/StartScreen';
 
 /** CREATING FAKE API
  * ? let's begin with installing a fake api, so that we fake that questions are rendering from api
@@ -34,23 +39,57 @@ import Main from './components/main/Main';
  * ! http://localhost:8000
  */
 
+const initialState = {
+  questions: [],
+
+  // this can be: 'loading', 'error', 'ready', 'active', 'finished'
+  status: 'loading',
+};
+
+const reducer = function (state, action) {
+  console.log(action.payload);
+  switch (action.type) {
+    case 'dataReceived':
+      return { ...state, questions: action.payload, status: 'ready' };
+    case 'dataFailed':
+      return { ...state, status: 'error' };
+    default:
+      throw new Error('Action is unknown');
+  }
+};
+
 function App() {
+  const [{ questions, status }, dispatch] = useReducer(reducer, initialState);
+
+  const numOfQuestions = questions.length;
+
   useEffect(() => {
-    async function fakeApi() {
+    /*  async function fakeApi() {
       const res = await fetch(`http://localhost:8000/questions`);
       const data = await res.json();
-      console.log(data);
-    }
+      return dispatch({ type: 'dataReceived', payload: data }).catch((err) =>
+        dispatch({ type: 'dataFailed' })
+      );
+    } */
 
-    fakeApi();
+    fetch(`http://localhost:8000/questions`)
+      .then((res) => res.json())
+      .then((data) => {
+        dispatch({
+          type: 'dataReceived',
+          payload: data,
+        });
+      })
+      .catch((err) => dispatch({ type: 'dataFailed' }));
   }, []);
 
   return (
     <div className='app'>
       <Header />
       <Main>
-        <p>1/5</p>
-        <p>Question?</p>
+        {status === 'loading' && <Loader />}
+        {status === 'error' && <Error />}
+        {status === 'ready' && <StartScreen numOfQuestions={numOfQuestions} />}
       </Main>
     </div>
   );
