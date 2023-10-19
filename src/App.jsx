@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import Header from './components/header/Header';
 import Main from './components/main/Main';
 
@@ -34,6 +35,16 @@ import Main from './components/main/Main';
  */
 
 function App() {
+  useEffect(() => {
+    async function fakeApi() {
+      const res = await fetch(`http://localhost:8000/questions`);
+      const data = await res.json();
+      console.log(data);
+    }
+
+    fakeApi();
+  }, []);
+
   return (
     <div className='app'>
       <Header />
