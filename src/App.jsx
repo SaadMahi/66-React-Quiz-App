@@ -1,17 +1,15 @@
-import DateCounter from './DateCounter';
-
-/**
- * ? what is useReduce hook
- * it is a more advanced and more complex way of managing state
- * instead of the useState hook
- *
- */
+import Header from './components/header/Header';
+import Main from './components/main/Main';
 
 function App() {
   return (
-    <>
-      <DateCounter />
-    </>
+    <div className='app'>
+      <Header />
+      <Main>
+        <p>1/5</p>
+        <p>Question?</p>
+      </Main>
+    </div>
   );
 }
 
