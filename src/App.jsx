@@ -5,7 +5,9 @@ import Error from './components/error/Error';
 
 import Header from './components/header/Header';
 import Main from './components/main/Main';
+
 import StartScreen from './components/start screen/StartScreen';
+import Questions from './components/questions/Questions';
 
 /** CREATING FAKE API
  * ? let's begin with installing a fake api, so that we fake that questions are rendering from api
@@ -44,22 +46,42 @@ const initialState = {
 
   // this can be: 'loading', 'error', 'ready', 'active', 'finished'
   status: 'loading',
+  index: 0,
+  answer: null,
+  points: 0,
 };
 
 const reducer = function (state, action) {
-  console.log(action.payload);
+  // //console.log(action.payload);
   switch (action.type) {
     case 'dataReceived':
       return { ...state, questions: action.payload, status: 'ready' };
     case 'dataFailed':
       return { ...state, status: 'error' };
+    case 'start':
+      return { ...state, status: 'active' };
+    case 'newAnswer':
+      const question = state.questions.at(state.index);
+
+      return {
+        ...state,
+        answer: action.payload,
+        points:
+          action.payload === question.correctOption
+            ? state.points + question.points
+            : state.points,
+      };
+
     default:
       throw new Error('Action is unknown');
   }
 };
 
 function App() {
-  const [{ questions, status }, dispatch] = useReducer(reducer, initialState);
+  const [{ questions, status, index, answer, points }, dispatch] = useReducer(
+    reducer,
+    initialState
+  );
 
   const numOfQuestions = questions.length;
 
@@ -89,7 +111,16 @@ function App() {
       <Main>
         {status === 'loading' && <Loader />}
         {status === 'error' && <Error />}
-        {status === 'ready' && <StartScreen numOfQuestions={numOfQuestions} />}
+        {status === 'ready' && (
+          <StartScreen numOfQuestions={numOfQuestions} dispatch={dispatch} />
+        )}
+        {status === 'active' && (
+          <Questions
+            questionIndex={questions[index]}
+            dispatch={dispatch}
+            answer={answer}
+          />
+        )}
       </Main>
     </div>
   );
