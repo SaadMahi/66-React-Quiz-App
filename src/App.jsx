@@ -11,6 +11,8 @@ import NextButton from './components/next button/NextButton';
 
 import StartScreen from './components/start screen/StartScreen';
 import FinishScreen from './components/finish screen/FinishScreen';
+import Footer from './components/footer/Footer';
+import Timer from './components/Timer';
 
 /** CREATING FAKE API
  * ? let's begin with installing a fake api, so that we fake that questions are rendering from api
@@ -44,6 +46,8 @@ import FinishScreen from './components/finish screen/FinishScreen';
  * ! http://localhost:8000
  */
 
+const SECS_PER_QUESTION = 30;
+
 const initialState = {
   questions: [],
 
@@ -53,6 +57,7 @@ const initialState = {
   answer: null,
   points: 0,
   highscore: 0,
+  secondsRemaining: null,
 };
 
 const reducer = function (state, action) {
@@ -63,7 +68,11 @@ const reducer = function (state, action) {
     case 'dataFailed':
       return { ...state, status: 'error' };
     case 'start':
-      return { ...state, status: 'active' };
+      return {
+        ...state,
+        status: 'active',
+        secondsRemaining: state.questions.length * SECS_PER_QUESTION,
+      };
     case 'newAnswer':
       const question = state.questions.at(state.index);
 
@@ -85,6 +94,18 @@ const reducer = function (state, action) {
         highscore:
           state.points > state.highscore ? state.points : state.highscore,
       };
+    case 'restart':
+      return {
+        ...initialState,
+        questions: state.questions,
+        status: 'ready',
+      };
+    case 'tick':
+      return {
+        ...state,
+        secondsRemaining: state.secondsRemaining - 1,
+        status: state.secondsRemaining === 0 ? 'finished' : state.status,
+      };
 
     default:
       throw new Error('Action is unknown');
@@ -92,8 +113,10 @@ const reducer = function (state, action) {
 };
 
 function App() {
-  const [{ questions, status, index, answer, points, highscore }, dispatch] =
-    useReducer(reducer, initialState);
+  const [
+    { questions, status, index, answer, points, highscore, secondsRemaining },
+    dispatch,
+  ] = useReducer(reducer, initialState);
 
   const numOfQuestions = questions.length;
   const maxPossiblePoints = questions.reduce(
@@ -146,12 +169,15 @@ function App() {
               answer={answer}
             />
 
-            <NextButton
-              dispatch={dispatch}
-              answer={answer}
-              numQuestions={numOfQuestions}
-              index={index}
-            />
+            <Footer>
+              <Timer dispatch={dispatch} secondsRemaining={secondsRemaining} />
+              <NextButton
+                dispatch={dispatch}
+                answer={answer}
+                numQuestions={numOfQuestions}
+                index={index}
+              />
+            </Footer>
           </>
         )}
         {status === 'finished' && (
@@ -159,6 +185,7 @@ function App() {
             points={points}
             maxPossiblePoints={maxPossiblePoints}
             highscore={highscore}
+            dispatch={dispatch}
           />
         )}
       </Main>
