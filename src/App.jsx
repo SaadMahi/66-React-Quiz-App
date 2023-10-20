@@ -10,6 +10,7 @@ import Questions from './components/questions/Questions';
 import NextButton from './components/next button/NextButton';
 
 import StartScreen from './components/start screen/StartScreen';
+import FinishScreen from './components/finish screen/FinishScreen';
 
 /** CREATING FAKE API
  * ? let's begin with installing a fake api, so that we fake that questions are rendering from api
@@ -51,6 +52,7 @@ const initialState = {
   index: 0,
   answer: null,
   points: 0,
+  highscore: 0,
 };
 
 const reducer = function (state, action) {
@@ -76,16 +78,22 @@ const reducer = function (state, action) {
     case 'nextQuestion':
       return { ...state, index: state.index + 1, answer: null };
 
+    case 'finish':
+      return {
+        ...state,
+        status: 'finished',
+        highscore:
+          state.points > state.highscore ? state.points : state.highscore,
+      };
+
     default:
       throw new Error('Action is unknown');
   }
 };
 
 function App() {
-  const [{ questions, status, index, answer, points }, dispatch] = useReducer(
-    reducer,
-    initialState
-  );
+  const [{ questions, status, index, answer, points, highscore }, dispatch] =
+    useReducer(reducer, initialState);
 
   const numOfQuestions = questions.length;
   const maxPossiblePoints = questions.reduce(
@@ -138,8 +146,20 @@ function App() {
               answer={answer}
             />
 
-            <NextButton dispatch={dispatch} answer={answer} />
+            <NextButton
+              dispatch={dispatch}
+              answer={answer}
+              numQuestions={numOfQuestions}
+              index={index}
+            />
           </>
+        )}
+        {status === 'finished' && (
+          <FinishScreen
+            points={points}
+            maxPossiblePoints={maxPossiblePoints}
+            highscore={highscore}
+          />
         )}
       </Main>
     </div>

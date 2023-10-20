@@ -3,7 +3,7 @@ import React from 'react';
 import Options from './Options';
 
 const Questions = ({ questionIndex, dispatch, answer }) => {
-  //   //console.log(questionIndex.options);
+  // //console.log(questionIndex.question);
   return (
     <div>
       <h4>{questionIndex.question}</h4>
