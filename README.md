@@ -1,5 +1,7 @@
 # <div align='center'> [🎮 The React Quiz 🚀](https://66-react-quiz-app.vercel.app/) </div>
-<p align="center">  <img src="https://github.com/SaadMahi/66-React-Quiz-App/assets/117567622/209f2d98-0427-4ec6-84a3-96c793dcc291" alt="Project Snapshot"> </p>
+<p align="center">  <img src="https://github.com/SaadMahi/66-React-Quiz-App/assets/117567622/cabeb28c-e429-4fc1-842e-73e6dcc24b47" alt="Project Snapshot"> </p>
+
+
 
 ## Project Overview
 
