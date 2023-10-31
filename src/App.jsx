@@ -26,9 +26,7 @@ function App() {
         {status === 'active' && (
           <>
             <Progress />
-
             <Questions />
-
             <Footer>
               <Timer />
               <NextButton />
