@@ -1,9 +1,12 @@
 import React from 'react';
+import { useQuiz } from '../../context/QuizContext';
 
-const NextButton = ({ dispatch, answer, numQuestions, index }) => {
+const NextButton = () => {
+  const { dispatch, answer, numOfQuestions, index } = useQuiz();
+
   if (answer === null) return null;
 
-  if (index < numQuestions - 1)
+  if (index < numOfQuestions - 1)
     return (
       <button
         onClick={() => dispatch({ type: 'nextQuestion' })}
@@ -13,7 +16,7 @@ const NextButton = ({ dispatch, answer, numQuestions, index }) => {
       </button>
     );
 
-  if (index === numQuestions - 1)
+  if (index === numOfQuestions - 1)
     return (
       <button
         onClick={() => dispatch({ type: 'finish' })}
